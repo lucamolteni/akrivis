@@ -6,9 +6,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
 
 @ApplicationScoped
-public class FetchJobSchedulerRepository implements PanacheRepository<FetchJob> {
+public class JobSchedulerRepository implements PanacheRepository<Job> {
 
-    public List<FetchJob> findActiveJobs() {
-        return list("status", FetchJobStatus.SCHEDULED);
+    public List<Job> findActiveJobs() {
+        return list("status", JobStatus.SCHEDULED);
     }
 }

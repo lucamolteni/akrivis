@@ -8,16 +8,16 @@ import java.time.Instant;
 import java.util.logging.Logger;
 
 @ApplicationScoped
-public class FetchJobExecutor {
+public class JobExecutor {
 
-    private static final Logger LOG = Logger.getLogger(FetchJobScheduler.class.getName());
+    private static final Logger LOG = Logger.getLogger(JobScheduler.class.getName());
 
     @Inject
-    FetchJobSchedulerRepository fetchJobSchedulerRepository;
+    JobSchedulerRepository jobSchedulerRepository;
 
-    public void run(ScheduledExecution executionContext, FetchJob job)  {
+    public void run(ScheduledExecution executionContext, Job job)  {
         job.lastRun = Instant.now();
         LOG.info("Executing job: %d at %s".formatted(job.id, job.lastRun.toString()));
-        fetchJobSchedulerRepository.persist(job);
+        jobSchedulerRepository.persist(job);
     }
 }

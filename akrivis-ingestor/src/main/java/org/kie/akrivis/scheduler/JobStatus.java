@@ -1,6 +1,6 @@
 package org.kie.akrivis.scheduler;
 
-public enum FetchJobStatus {
+public enum JobStatus {
     SCHEDULED,
     RUNNING,
     COMPLETED,

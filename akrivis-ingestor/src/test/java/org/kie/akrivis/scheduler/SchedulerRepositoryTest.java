@@ -11,10 +11,10 @@ import static org.hamcrest.Matchers.hasSize;
 class SchedulerRepositoryTest {
 
     @Inject
-    FetchJobSchedulerRepository fetchJobSchedulerRepository;
+    JobSchedulerRepository jobSchedulerRepository;
 
     @Test
     public void testFindActiveJobs() {
-        assertThat(fetchJobSchedulerRepository.findActiveJobs(), hasSize(1));
+        assertThat(jobSchedulerRepository.findActiveJobs(), hasSize(1));
     }
 }

@@ -6,30 +6,30 @@ import jakarta.inject.Inject;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class FetchJobScheduler {
+public class JobScheduler {
 
-    private static final Logger LOG = Logger.getLogger(FetchJobScheduler.class.getName());
+    private static final Logger LOG = Logger.getLogger(JobScheduler.class.getName());
 
     @Inject
     Scheduler scheduler;
 
     @Inject
-    FetchJobSchedulerRepository fetchJobSchedulerRepository;
+    JobSchedulerRepository jobSchedulerRepository;
 
     @Inject
-    FetchJobExecutor fetchJobExecutor;
+    JobExecutor fetchJobExecutor;
 
     // This should be run at startup
     public void schedule() {
 
-        List<FetchJob> activeJobs = fetchJobSchedulerRepository.findActiveJobs();
+        List<Job> activeJobs = jobSchedulerRepository.findActiveJobs();
 
         if (activeJobs.isEmpty()) {
             LOG.info("There are active jobs, not scheduling new job");
             return;
         }
 
-        for(FetchJob job : activeJobs) {
+        for(Job job : activeJobs) {
             scheduler.newJob(job.id + job.endpoint)
                      .setCron(job.cron)
                      .setTask(executionContext -> fetchJobExecutor.run(executionContext, job))

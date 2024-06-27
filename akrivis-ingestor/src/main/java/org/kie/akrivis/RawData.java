@@ -7,7 +7,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.ColumnTransformer;
-import org.kie.akrivis.scheduler.FetchJob;
+import org.kie.akrivis.scheduler.Job;
 
 import java.time.Instant;
 
@@ -23,7 +23,7 @@ public class RawData {
     public Instant createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "fk_fetch_job")
-    public FetchJob fetchJob;
+    @JoinColumn(name = "fk_job")
+    public Job job;
 
 }

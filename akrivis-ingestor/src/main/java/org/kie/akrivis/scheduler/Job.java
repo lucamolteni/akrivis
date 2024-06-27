@@ -10,8 +10,8 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 
 @Entity
-@Table(name = "fetch_job")
-public class FetchJob {
+@Table(name = "job")
+public class Job {
 
     @Id
     public long id;
@@ -21,7 +21,7 @@ public class FetchJob {
     public String cron;
 
     @Enumerated(EnumType.STRING)
-    public FetchJobStatus status;
+    public JobStatus status;
 
     @Column(name = "last_run")
     public Instant lastRun;
