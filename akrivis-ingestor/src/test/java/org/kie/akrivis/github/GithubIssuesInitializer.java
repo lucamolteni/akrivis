@@ -15,6 +15,7 @@ import jakarta.inject.Singleton;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.kie.akrivis.RawData;
+import org.kie.akrivis.scheduler.FetchJob;
 
 import java.time.Instant;
 import java.util.logging.Logger;
@@ -48,6 +49,7 @@ public class GithubIssuesInitializer {
 
         rawData.data = arrayNode.toString();
         rawData.id = 2L;
+        rawData.fetchJob = entityManager.getReference(FetchJob.class, 1L);
         rawData.createdAt = Instant.parse("2021-01-01T00:00:00Z");
 
         entityManager.persist(rawData);
