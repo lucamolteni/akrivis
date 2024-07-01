@@ -14,7 +14,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import org.kie.akrivis.RawData;
+import org.kie.akrivis.scheduler.RawData;
 import org.kie.akrivis.scheduler.Job;
 
 import java.time.Instant;

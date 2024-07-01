@@ -6,6 +6,8 @@ import jakarta.inject.Inject;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static org.kie.akrivis.scheduler.IngestorHttpClient.findHttpClient;
+
 public class JobScheduler {
 
     private static final Logger LOG = Logger.getLogger(JobScheduler.class.getName());
@@ -29,10 +31,12 @@ public class JobScheduler {
             return;
         }
 
-        for(Job job : activeJobs) {
+        for (Job job : activeJobs) {
+            IngestorHttpClient httpClient = findHttpClient(job.type);
+
             scheduler.newJob(job.id + job.endpoint)
                      .setCron(job.cron)
-                     .setTask(executionContext -> fetchJobExecutor.run(executionContext, job))
+                     .setTask(executionContext -> fetchJobExecutor.run(job, httpClient))
                      .schedule();
         }
     }

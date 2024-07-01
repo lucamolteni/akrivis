@@ -18,6 +18,8 @@ public class Job {
 
     public String endpoint;
 
+    public String type;
+
     public String cron;
 
     @Enumerated(EnumType.STRING)

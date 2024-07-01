@@ -1,8 +1,8 @@
 package org.kie.akrivis.scheduler;
 
-import io.quarkus.scheduler.ScheduledExecution;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 import java.time.Instant;
 import java.util.logging.Logger;
@@ -15,9 +15,19 @@ public class JobExecutor {
     @Inject
     JobSchedulerRepository jobSchedulerRepository;
 
-    public void run(ScheduledExecution executionContext, Job job)  {
+    @Transactional
+    public void run(Job job, IngestorHttpClient client) {
         job.lastRun = Instant.now();
         LOG.info("Executing job: %d at %s".formatted(job.id, job.lastRun.toString()));
-        jobSchedulerRepository.persist(job);
+
+        RawData newRawData = new RawData();
+
+        newRawData.data =  client.fetchData(job.endpoint);
+        newRawData.job = job;
+        newRawData.createdAt = job.lastRun;
+
+        jobSchedulerRepository.getEntityManager().persist(newRawData);
+
+
     }
 }

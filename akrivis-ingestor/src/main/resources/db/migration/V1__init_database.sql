@@ -1,6 +1,7 @@
 create table job
 (
     id         serial primary key,
+    type       varchar(255) not null,
     endpoint   varchar(255) not null,
     cron       varchar(255) not null,
     status     varchar(255) not null,
@@ -8,8 +9,12 @@ create table job
     last_run   timestamp null
 );
 
-insert into job (id, endpoint, cron, status)
-values (1, '/issues', '0/5 * * * * ?', 'SCHEDULED');
+insert into job (id, type, endpoint, cron, status)
+values (1, 'GitHub', '/issues', '0/5 * * * * ?', 'SCHEDULED');
+
+
+insert into job (id, type, endpoint, cron, status)
+values (2, 'mock', '/issues', '0/5 * * * * ?', 'SCHEDULED');
 
 
 create table raw_data

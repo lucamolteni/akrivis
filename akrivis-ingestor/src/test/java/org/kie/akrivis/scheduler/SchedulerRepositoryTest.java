@@ -15,6 +15,6 @@ class SchedulerRepositoryTest {
 
     @Test
     public void testFindActiveJobs() {
-        assertThat(jobSchedulerRepository.findActiveJobs(), hasSize(1));
+        assertThat(jobSchedulerRepository.findActiveJobs(), hasSize(2));
     }
 }

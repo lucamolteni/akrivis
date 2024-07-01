@@ -4,7 +4,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
-import org.kie.akrivis.RawData;
+import org.kie.akrivis.scheduler.RawData;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONAs;
