@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.quarkus.panache.common.Sort;
 import jakarta.inject.Inject;
-import jakarta.json.JsonObject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -18,6 +17,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import org.kie.akrivis.utility.BackstageResponse;
 
 import java.time.Instant;
 import java.util.List;
@@ -138,6 +138,7 @@ public class JobResource {
     public Response rawData(@PathParam("id") Long jobId, @PathParam("dataId") Long dataId) throws JsonProcessingException {
         return jobRepository.findRawDataById(jobId, dataId)
                             .map(RawDataDetailDTO::new)
+                            .map(BackstageResponse::new)
                             .map(Response::ok)
                             .orElse(Response.status(Status.NO_CONTENT)).build();
     }
