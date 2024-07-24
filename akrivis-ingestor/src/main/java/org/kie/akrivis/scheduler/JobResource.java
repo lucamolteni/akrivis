@@ -67,12 +67,12 @@ public class JobResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}/test")
-    public RawDataDetailDTO test(@PathParam("id") Long jobId) throws JsonProcessingException {
+    public BackstageResponse<RawDataDetailDTO> test(@PathParam("id") Long jobId) throws JsonProcessingException {
 
         Job job = jobRepository.findById(jobId);
         RawData run = jobExecutor.run(job.id, IngestorHttpClient.findHttpClient(job.type));
 
-        return new RawDataDetailDTO(run);
+        return new BackstageResponse<>(new RawDataDetailDTO(run));
     }
 
     @DELETE
