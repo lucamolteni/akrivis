@@ -100,8 +100,12 @@ public class JobResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<JobResponse> all() throws JsonProcessingException {
-        return jobRepository.findAll(Sort.ascending("id")).stream().map(JobResponse::new).toList();
+    public BackstageResponse<List<JobResponse>> all() throws JsonProcessingException {
+        return new BackstageResponse<>(
+                jobRepository.findAll(Sort.ascending("id"))
+                            .stream()
+                            .map(JobResponse::new)
+                            .toList());
     }
 
     public record RawDataDTO(Long id, Instant createdAt) {
@@ -113,8 +117,10 @@ public class JobResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}/data")
-    public List<RawDataDTO> rawData(@PathParam("id") Long jobId) throws JsonProcessingException {
-        return jobRepository.findRawDataByJobId(jobId).stream().map(RawDataDTO::new).toList();
+    public BackstageResponse<List<RawDataDTO>> rawData(@PathParam("id") Long jobId) throws JsonProcessingException {
+        return new BackstageResponse<>(jobRepository.findRawDataByJobId(jobId)
+                            .stream()
+                            .map(RawDataDTO::new).toList());
     }
 
     public record RawDataDetailDTO(Long id, Instant createdAt, JsonNode data) {
