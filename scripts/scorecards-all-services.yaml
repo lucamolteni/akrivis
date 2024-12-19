@@ -10,6 +10,14 @@ services:
       DB_PASSWORD: connor
       DB_CONNECTION_STRING: jdbc:postgresql://akrivis_postgres:5432/quarkus_test
       EVALUATOR_ADDRESS: http://localhost:8082
+
+  evaluator:
+    image: kubesmarts/akrivis-evaluator-jvm
+    container_name: evaluator
+    restart: always
+    ports:
+      - "8082:8080"
+
   ingestor:
     image: kubesmarts/akrivis-ingestor-jvm
     container_name: ingestor
@@ -20,6 +28,7 @@ services:
       DB_USERNAME: sarah
       DB_PASSWORD: connor
       DB_CONNECTION_STRING: jdbc:postgresql://akrivis_postgres:5432/quarkus_test
+
   db:
     image: postgres
     container_name: akrivis_postgres
