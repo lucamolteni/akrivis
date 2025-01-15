@@ -35,23 +35,32 @@ class SchedulerRepositoryTest {
     }
 
     @Test
-    @Transactional
     public void deleteCascade() {
         Job job1 = job("endpoint1", "0/5 * * * * ?");
-
-        jobRepository.persist(job1);
-
         RawData rawData1 = rawData(job1, "a");
         RawData rawData2 = rawData(job1, "b");
 
-        jobRepository.getEntityManager().merge(rawData1);
-        jobRepository.getEntityManager().merge(rawData2);
+        createJobRawData(job1, rawData1, rawData2);
 
         assertThat(jobRepository.findRawDataByJobId(job1.id), hasSize(2));
 
-        jobRepository.delete(job1.id);
+        delete(job1);
 
         assertThat(jobRepository.findRawDataByJobId(job1.id), hasSize(0));
+    }
+
+    @Transactional
+    public void delete(Job job1) {
+        jobRepository.delete(job1.id);
+    }
+
+    @Transactional
+    public void createJobRawData(Job job1, RawData... rawData) {
+        jobRepository.persist(job1);
+
+        for(RawData data : rawData) {
+            jobRepository.getEntityManager().merge(data);
+        }
     }
 
     @Test
