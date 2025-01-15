@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingestor
+  labels:
+    app-component: ingestor
+spec:
+  selector:
+    matchLabels:
+      app-component: ingestor
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app-component: ingestor
+    spec:
+      containers:
+        - image: localhost/kubesmarts/akrivis-ingestor:1.0
+          imagePullPolicy: IfNotPresent
+          name: ingestor
+          env:
+            - name: DB_USERNAME
+              value: "sarah"
+            - name: DB_PASSWORD
+              value: "connor"
+            - name: DB_CONNECTION_STRING
+              value: "jdbc:postgresql://scorecard-db:5432/quarkus_test"
+          ports:
+            - containerPort: 8083
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scorecard
+spec:
+  ports:
+    - name: web
+      protocol: TCP
+      port: 8083
+      targetPort: 8083
+  selector:
+    app-component: ingestor
