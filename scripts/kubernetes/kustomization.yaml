@@ -3,4 +3,4 @@ resources:
   - resources/postgres.yaml
   - resources/postgres-config.yaml
   - resources/volume.yaml
-  - resources/ingestor-deploy.yaml
+#  - resources/ingestor-deploy.yaml
