@@ -1,7 +1,0 @@
-
-resources:
-  - resources/postgres.yaml
-  - resources/postgres-config.yaml
-  - resources/volume.yaml
-  - resources/secret.yaml
-  - resources/configmap.yaml
