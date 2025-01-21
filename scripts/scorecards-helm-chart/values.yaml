@@ -265,7 +265,8 @@ backstage:
       image:
         # use 1.2 till we get the CI working again and publishing upstream
         # versions of the orchestrtor and notification plugins
-        tag: "1.2"
+        repository: rhdh-community/rhdh
+        tag: "next-arm64"
       extraEnvVarsSecrets:
         - backstage-backend-auth-secret
       appConfig:
