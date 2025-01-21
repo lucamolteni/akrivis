@@ -27,8 +27,3 @@ dependencies:
   - name: backstage
     repository: https://redhat-developer.github.io/rhdh-chart
     version: "2.18.0"
-  - name: postgresql
-    repository: https://charts.bitnami.com/bitnami
-    version: "16.4.5"
-    condition: postgresql-persistent.enabled
-
