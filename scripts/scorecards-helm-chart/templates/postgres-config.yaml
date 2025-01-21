@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: scorecard-db-config
 data:
-  POSTGRES_USER: sarah
-  POSTGRES_PASSWORD: connor
-  POSTGRES_DB: quarkus_test
+  POSTGRESQL_USER: sarah
+  POSTGRESQL_PASSWORD: connor
+  POSTGRESQL_DATABASE: quarkus_test
   PGDATA: /var/lib/postgresql/data/pgdata

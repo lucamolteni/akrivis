@@ -18,8 +18,8 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: docker.io/library/postgres
-          imagePullPolicy: IfNotPresent
+          image: quay.io/fedora/postgresql-15:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 5432
           envFrom:
