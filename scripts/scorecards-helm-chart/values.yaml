@@ -121,3 +121,197 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# Backstage
+backstage:
+  route:
+    # set to false for kubernetes
+    enabled: false
+  global:
+    dynamic:
+      includes:
+        - dynamic-plugins.default.yaml
+      plugins:
+        - disabled: false
+          package: "@janus-idp/backstage-plugin-orchestrator-backend-dynamic@1.21.0"
+          integrity: sha512-/g7pjYZmKXTalWQTH+L5w1Uu4xvKHe6G7RQd2chhP3Ey2opO+IHtz8TtrLa4fCeWxlrrVpfTI6PiXamTAO4zMg==
+          pluginConfig:
+            orchestrator:
+              dataIndexService:
+                url: http://sonataflow-platform-data-index-service
+              editor:
+                path: https://sandbox.kie.org/swf-chrome-extension/0.32.0
+        - disabled: false
+          package: "@janus-idp/backstage-plugin-orchestrator@1.22.0"
+          integrity: sha512-7CAhoVgI2QTErPzZBHXb7OJp1R9c1qtljCF3I92o1ITrn81/3wy1VLMjVmjYK0QrvAkYM9aH/1izoZ4cayKbRw==
+          pluginConfig:
+            dynamicPlugins:
+              frontend:
+                janus-idp.backstage-plugin-orchestrator:
+                  appIcons:
+                    - importName: OrchestratorIcon
+                      module: OrchestratorPlugin
+                      name: orchestratorIcon
+                  dynamicRoutes:
+                    - importName: OrchestratorPage
+                      menuItem:
+                        icon: orchestratorIcon
+                        text: Orchestrator
+                      module: OrchestratorPlugin
+                      path: /orchestrator
+        - disabled: false
+          package: "https://github.com/redhat-developer/rhdh-plugin-export-backstage-backstage/releases/download/v1.2.0/backstage-plugin-notifications-dynamic-0.2.0.tgz"
+          integrity: sha512-juXCynHPSIYThJHh1ZfR+77kyAtla3vNOl1telUgC402KZCUoAVB+X3H4ZACWGZNvFQ8ySyVc5q/mE1MrCzW0g==
+          pluginConfig:
+            dynamicPlugins:
+              frontend:
+                backstage.plugin-notifications:
+                  dynamicRoutes:
+                    - importName: NotificationsPage
+                      menuItem:
+                        config:
+                          props:
+                            titleCounterEnabled: true
+                            webNotificationsEnabled: false
+                        importName: NotificationsSidebarItem
+                      path: /notifications
+        - disabled: false
+          package: "https://github.com/redhat-developer/rhdh-plugin-export-backstage-backstage/releases/download/v1.2.0/backstage-plugin-notifications-backend-dynamic-0.2.0.tgz"
+          integrity: sha512-QxIkZ7uX8CuCu9EUm8t0T0HOv9KT2AboMBwyr0Xu6Xa1I2U3E59YL5f5NQO9yVpidf+6rlV7qTCvJSn5MAQGnw==
+        - disabled: false
+          package: https://github.com/redhat-developer/rhdh-plugin-export-backstage-backstage/releases/download/v1.2.0/backstage-plugin-signals-dynamic-0.0.5.tgz
+          integrity: sha512-QSDkIYPWjgzcBdt3Gvd7Omq472rMI4oy6x7vLTXVHpIzmWetJalaB6SH8dXxORCFqL6hb3ccJjPsn3rSV8+2Jw==
+          pluginConfig:
+            dynamicPlugins:
+              frontend:
+                backstage.plugin-signals: {}
+        - disabled: false
+          package: https://github.com/redhat-developer/rhdh-plugin-export-backstage-backstage/releases/download/v1.2.0/backstage-plugin-signals-backend-dynamic-0.1.3.tgz
+          integrity: sha512-124+7o/wurgiWkSY5j/80SaauAX/3iVACIm+jR5g09r5QlKfO+GCCNuqhJ8xfbNT+bT6OeyWjPRJMkkjap0u4Q==
+  upstream:
+    # TODO when setting this to false the secret is still referenced in the rhdh
+    # deployment, looks like rhdh-backstage chart doesn't support excluding
+    # the postrgres secret part.
+    postgresql:
+      #enabled: false
+      primary:
+        resources:
+          limits:
+            ephemeral-storage: 2Gi
+    ingress:
+      enabled: true # Use Kubernetes Ingress instead of OpenShift Route
+    backstage:
+      extraVolumes:
+        - name: backstage-locations
+          configMap:
+            name: backstage-locations
+        - name: dynamic-plugins-root
+          ephemeral:
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    # -- Size of the volume that will contain the dynamic plugins. It should be large enough to contain all the plugins.
+                    storage: 1Gi
+        # Volume that will expose the `dynamic-plugins.yaml` file from the `dynamic-plugins` config map.
+        # The `dynamic-plugins` config map is created by the helm chart from the content of the `global.dynamic` field.
+        - name: dynamic-plugins
+          configMap:
+            defaultMode: 420
+            name: '{{ printf "%s-dynamic-plugins" .Release.Name }}'
+            optional: false
+        - name: app-config
+          configMap:
+            defaultMode: 420
+            name: '{{ printf "%s-backstage-app-config" .Release.Name }}'
+            optional: false
+        # Optional volume that allows exposing the `.npmrc` file (through a `dynamic-plugins-npmrc` secret)
+        # to be used when running `npm pack` during the dynamic plugins installation by the initContainer.
+        - name: dynamic-plugins-npmrc
+          secret:
+            defaultMode: 420
+            optional: true
+            secretName: dynamic-plugins-npmrc
+        - name: npmcacache
+          emptyDir: {}
+      extraVolumeMounts:
+        - name: backstage-locations
+          mountPath: /opt/backstage/locations
+        - mountPath: /opt/app-root/src/.npmrc.dynamic-plugins
+          name: dynamic-plugins-npmrc
+        - name: dynamic-plugins-root
+          mountPath: /opt/app-root/src/dynamic-plugins-root
+        - name: app-config
+          readOnly: true
+          mountPath: /opt/app-root/src/default.app-config.yaml
+          subPath: default.app-config.yaml
+        - name: dynamic-plugins
+          readOnly: true
+          mountPath: /opt/app-root/src/dynamic-plugins.yaml
+          subPath: dynamic-plugins.yaml
+      resources:
+        limits:
+          memory: 2Gi
+          cpu: 1000m
+        requests:
+          memory: 800Mi
+          cpu: 200m
+      podSecurityContext: # Vanilla Kubernetes doesn't feature OpenShift default SCCs with dynamic UIDs, adjust accordingly to the deployed image
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+      image:
+        # use 1.2 till we get the CI working again and publishing upstream
+        # versions of the orchestrtor and notification plugins
+        tag: "1.2"
+      extraEnvVarsSecrets:
+        - backstage-backend-auth-secret
+      appConfig:
+        app:
+          baseUrl: http://localhost:9090
+        backend:
+          auth:
+            # for backstage < 1.27 we still need this
+            keys:
+              - secret: ${BACKEND_SECRET}
+            externalAccess:
+              - type: static
+                options:
+                  token: ${BACKEND_SECRET}
+                  subject: orchestrator
+          baseUrl: http://localhost:9090
+          cors:
+            origin: http://localhost:9090
+        integrations:
+          github:
+            - host: github.com
+              token: "INSERT VALID TOKEN HERE"
+        auth:
+          environment: development
+          providers:
+            github:
+              development:
+                clientId: ${GH_PROVIDER_CLIENT_ID:-provide_gh_provider_client_id_in_backstage_backend_auth_secret}
+                clientSecret: ${GH_PROVIDER_SECRET:-provide_gh_provider_secret_in_backstage_backend_auth_secret}
+            guest:
+              dangerouslyAllowOutsideDevelopment: true
+              userEntityRef: user:default/guest
+        catalog:
+          rules:
+            - allow: [Component, System, Group, Resource, Location, Template, API, User, Domain]
+          locations:
+            - target: https://github.com/janus-idp/software-templates/blob/main/showcase-templates.yaml
+              type: url
+            - target: /opt/backstage/locations/users.yaml
+              type: file
+            - target: /opt/backstage/locations/workflow-resources.yaml
+              type: file
+          csp:
+            script-src: ["'self'", "'unsafe-inline'", "'unsafe-eval'"]
+            script-src-elem: ["'self'", "'unsafe-inline'", "'unsafe-eval'"]
+            connect-src: ["'self'", 'http:', 'https:', 'data:']
+        orchestrator:
+          catalog:
+            environment: development
