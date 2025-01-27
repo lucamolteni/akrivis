@@ -17,8 +17,23 @@ backstage:
         - dynamic-plugins.default.yaml
       plugins:
         - disabled: false
-          package: "@lucamolteni/backstage-plugin-rules-dynamic"
-          integrity: sha512-r20ElPuVvKv87w2LbTE8rOqZvy+q2YfolTp0z+TYceSFJqABuJnjzVtmH/yzWGz/g/IXg8Rpj5r8IGtihQBTcg==
+          package: "@lucamolteni/backstage-plugin-rules-dynamic@0.1.1"
+          integrity: sha512-i2/IK6t8g2NUpQMbhuUPlyrbRZYFOYHgmZt0TU1ASIshp6etCube6ZpuMBk/qzbhMOgObZfHmf45AaNY3tXDVg==
+          pluginConfig:
+            dynamicPlugins:
+              frontend:
+                lucamolteni.backstage-plugin-scorecards:
+                  appIcons:
+                    - importName: RulesIcon
+                      module: RulesPlugin
+                      name: rulesIcon
+                  dynamicRoutes:
+                    - importName: RulesPage
+                      menuItem:
+                        icon: rulesIcon
+                        text: Rules
+                      module: RulesPlugin
+                      path: /rules
 
   upstream:
     # TODO when setting this to false the secret is still referenced in the rhdh
