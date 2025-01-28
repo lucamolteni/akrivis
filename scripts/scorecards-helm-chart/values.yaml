@@ -119,6 +119,21 @@ backstage:
       appConfig:
         app:
           baseUrl: http://localhost:9090
+        proxy:
+          '/ingestor/api':
+            target: 'http://akrivis-ingestor.default.svc.cluster.local'
+            headers:
+              X-Requested-With: 'XMLHttpRequest'
+            changeOrigin: true
+            secure: false
+            credentials: 'dangerously-allow-unauthenticated'
+          '/processor/api':
+            target: 'http://akrivis-processor.default.svc.cluster.local'
+            headers:
+              X-Requested-With: 'XMLHttpRequest'
+            changeOrigin: true
+            secure: false
+            credentials: 'dangerously-allow-unauthenticated'
         backend:
           auth:
             # for backstage < 1.27 we still need this
