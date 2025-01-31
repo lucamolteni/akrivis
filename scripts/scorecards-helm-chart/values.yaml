@@ -17,8 +17,8 @@ backstage:
         - dynamic-plugins.default.yaml
       plugins:
         - disabled: false
-          package: "@lucamolteni/backstage-plugin-rules-dynamic@0.1.1"
-          integrity: sha512-i2/IK6t8g2NUpQMbhuUPlyrbRZYFOYHgmZt0TU1ASIshp6etCube6ZpuMBk/qzbhMOgObZfHmf45AaNY3tXDVg==
+          package: "@lucamolteni/backstage-plugin-rules-dynamic@0.1.4"
+          integrity: sha512-0AoJRtfNUSZV9AxLuWDTDTncU/ziXaIxxNue/zxjvpFUszAt68k/L1lDJRjoJ6LaCb3zwmiG/JA4P1VDOsGteg==
           pluginConfig:
             dynamicPlugins:
               frontend:
@@ -34,6 +34,13 @@ backstage:
                         text: Rules
                       module: RulesPlugin
                       path: /rules
+        - disabled: false
+          package: "@lucamolteni/backstage-plugin-rules-backend-dynamic@0.1.2"
+          integrity: sha512-ucapIZ7WAt0PLOlJmMcKgYI0EpiZsV2MLYgL9ThjTIpIdzI/G799f1/ZeWV7nA87i+uBAeY88IIrxKO50HBPLA==
+          pluginConfig:
+            scorecards:
+              ingestor:
+                url: "http://akrivis-ingestor.default.svc.cluster.local"
 
   upstream:
     # TODO when setting this to false the secret is still referenced in the rhdh
@@ -147,6 +154,9 @@ backstage:
           baseUrl: http://localhost:9090
           cors:
             origin: http://localhost:9090
+          scorecards:
+            ingestor:
+              url: "http://akrivis-ingestor.default.svc.cluster.local"
         integrations:
           github:
             - host: github.com
